@@ -8,7 +8,6 @@
 </head>
 <body>
 
-
   <div class="keys">
     <div data-key="65" class="key">
       <kbd>A</kbd>
@@ -59,9 +58,29 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+  const btnsElemsByKeyCodes = Object.fromEntries([...document.getElementsByClassName('key')]
+          .map(btnElem => ([btnElem.dataset.key, btnElem])))
 
+  const soundsPathsByKeyCodes = Object.fromEntries([...document.getElementsByTagName('audio')]
+          .map(soundElem => ([soundElem.dataset.key, soundElem.src])))
+
+  document.addEventListener('keydown', ev => {
+    const btnElem = btnsElemsByKeyCodes[ev.keyCode]
+    if (!btnElem)
+      return
+
+    new Audio(soundsPathsByKeyCodes[ev.keyCode]).play()
+    btnElem.classList.add('playing')
+  })
+
+  document.addEventListener('keyup', ev => {
+    const btnElem = btnsElemsByKeyCodes[ev.keyCode]
+    if (!btnElem)
+      return
+
+    btnElem.classList.remove('playing')
+  })
 </script>
-
 
 </body>
 </html>
