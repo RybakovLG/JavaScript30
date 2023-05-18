@@ -1,22 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Type Ahead 👀</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://fav.farm/🔥" />
+    <meta charset="UTF-8">
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://fav.farm/🔥"/>
 </head>
 <body>
 
-  <form class="search-form">
+<form class="search-form">
     <input type="text" class="search" placeholder="City or State">
     <ul class="suggestions">
-      <li>Filter for a city</li>
-      <li>or a state</li>
+        <li>Filter for a city</li>
+        <li>or a state</li>
     </ul>
-  </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+</form>
+<script type="module" async>
+
+    //todo speedup with bg from founded positions
+    console.log('start')
+    const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+    const allCities = await fetch(endpoint).then(res => res.json())
+    const ul = document.getElementsByClassName('suggestions')[0]
+
+    function generateFilteredCitiesList({target: {value}}) {
+
+        const foundRegex = new RegExp(`(${value})`, 'ig')
+
+        const citiesList = allCities
+            .reduce((list, {city, state, population}) => {
+
+                const str = `${city} ${state}`
+                const replaced = str.replaceAll(foundRegex, (match, p1) =>
+                    `<span class="hl">${p1}</span>`)
+
+                if (replaced !== str) {
+                    list.push(
+                        `<li><span class="name">${replaced}</span><span class="population">${new Intl.NumberFormat("en").format(population)}</span></li>`
+                    )
+                }
+                return list
+            }, [])
+
+        ul.innerHTML = citiesList.join('')
+    }
+
+    document.getElementsByClassName('search')[0].addEventListener('input', generateFilteredCitiesList)
 
 </script>
 </body>
