@@ -1,20 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>HTML5 Canvas</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
+    <meta charset="UTF-8">
+    <title>HTML5 Canvas</title>
+    <link rel="icon" href="https://fav.farm/🔥"/>
+    <style>
+        html, body {
+            margin: 0;
+        }
+
+    </style>
 </head>
 <body>
-<canvas id="draw" width="800" height="800"></canvas>
+<canvas id="draw"></canvas>
 <script>
+    const canvas = document.getElementById('draw'),
+        ctx = canvas.getContext('2d');
+    canvas.width = document.documentElement.clientWidth
+    canvas.height = document.documentElement.clientHeight
+    let isMouseDowned = false;
+
+    const stop = () => {isMouseDowned = false}
+
+    canvas.addEventListener('mousedown', ev => {
+        [prevX, prevY] = [ev.offsetX, ev.offsetY]
+        isMouseDowned = true
+    });
+
+    ['mouseup','mouseleave'].forEach(ev => {
+        canvas.addEventListener(ev, stop)
+    })
+
+    function* colorGenerator() {
+        let color = 0
+
+        while (1) {
+            color = color > 356 ? 0 : color + .5
+            yield `hsl(${color}, 100%, 50%)`
+        }
+    }
+
+    function* lineWidthGenerator() {
+        let width = 5,
+            direction = 'up'
+
+        while (1) {
+            direction = (width > 100)
+                ? 'down'
+                : width < 5
+                    ? 'up'
+                    : direction
+
+            yield direction === 'up' ? width += .5 : width -= .5
+        }
+    }
+
+    const getColor = colorGenerator()
+    const getWidth = lineWidthGenerator()
+
+    let prevX, prevY
+
+    function draw(ev) {
+        if (!isMouseDowned) return
+
+        requestAnimationFrame(() => {
+            ctx.beginPath();
+
+            const {offsetY, offsetX} = ev;
+            ctx.moveTo(prevX, prevY);
+            [prevX, prevY] = [offsetX,offsetY]
+
+            ctx.lineTo(offsetX, offsetY);
+
+            ctx.lineCap = 'round'
+            ctx.lineJoin = 'round'
+            ctx.strokeStyle = getColor.next().value;
+            ctx.lineWidth = getWidth.next().value;
+
+            ctx.stroke();
+        })
+    }
+
+    canvas.addEventListener('mousemove', draw)
+
 </script>
 
-<style>
-  html, body {
-    margin: 0;
-  }
-</style>
+
 
 </body>
 </html>
