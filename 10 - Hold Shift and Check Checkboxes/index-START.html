@@ -97,6 +97,36 @@
   </div>
 
 <script>
+  const boxesInputs = document.querySelectorAll('input[type=checkbox]')
+  let shiftPressed = false;
+
+  ['keydown', 'keyup'].forEach(evName => {
+    document.addEventListener(evName, ev => {
+      shiftPressed = ev.shiftKey
+    })
+  })
+
+  let startIndex = null
+
+  document.getElementsByClassName('inbox')[0].addEventListener('click', ev => {
+    if (ev.target.type !== 'checkbox')
+      return
+
+    if(shiftPressed) {
+      if (!startIndex) {
+        startIndex = Array.from(boxesInputs).findIndex(inp => inp === ev.target)
+
+      } else {
+      const currElIndex = Array.from(boxesInputs).findIndex(el => el === ev.target)
+
+        for (let i = Math.min(currElIndex, startIndex); i < Math.max(currElIndex, startIndex); i++) {
+            boxesInputs[i].checked = true
+        }
+
+        startIndex = null
+    }}
+  })
+
 </script>
 </body>
 </html>
