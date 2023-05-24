@@ -59,6 +59,20 @@
       };
     }
 
+    const imges = document.getElementsByTagName('img')
+
+    function slideImg(entries) {
+      entries.forEach(({isIntersecting, target}) => {
+        debounce(target.classList[isIntersecting ? 'add' : 'remove']('active'))
+      })
+    }
+
+    const observer = new IntersectionObserver(slideImg);
+
+    [...imges].forEach(img => {
+      observer.observe(img)
+    });
+
   </script>
 
   <style>

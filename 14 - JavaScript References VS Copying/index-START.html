@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>JS Reference VS Copy</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
+    <meta charset="UTF-8">
+    <title>JS Reference VS Copy</title>
+    <link rel="icon" href="https://fav.farm/🔥"/>
 </head>
 <body>
 
-  <script>
+<script>
     // start with strings, numbers and booleans
 
     // Let's say we have an array
     const players = ['Wes', 'Sarah', 'Ryan', 'Poppy'];
 
     // and we want to make a copy of it.
+    console.log([...players]) //or
+    console.log(Array(...players))
 
     // You might think we can just do something like this:
 
@@ -39,19 +41,55 @@
 
     // with Objects
     const person = {
-      name: 'Wes Bos',
-      age: 80
+        name: 'Wes Bos',
+        age: 80,
+        deep: {
+            parents: 2
+        }
     };
 
     // and think we make a copy:
+    console.time('start copy')
+    const spreadCopy = {...person}
+    console.timeLog('start copy','spreadCopy ready')
 
+    const assignCopy = Object.assign({},person)
+
+    console.timeLog('start copy','assignCopy ready')
+
+    const jsonParseCopy = JSON.parse(JSON.stringify(person));
+    console.timeLog('start copy','jsonParseCopy ready')
+    // console.timeEnd('start copy')
+
+
+    console.log(JSON.stringify({person}))
+    console.log(JSON.stringify({spreadCopy})) //or
+    console.log(JSON.stringify({assignCopy}))
+    console.log(JSON.stringify({jsonParseCopy}))
+
+    console.log('try mutate copies')
+    spreadCopy.age = 90
+    spreadCopy.deep.parents = 3
+
+    assignCopy.age = 100
+    assignCopy.deep.parents = 4
+
+    jsonParseCopy.age = 110
+    jsonParseCopy.deep.parents = 5
+
+    console.log('results')
+
+    console.log(JSON.stringify({person}))
+    console.log(JSON.stringify({spreadCopy}))
+    console.log(JSON.stringify({assignCopy}))
+    console.log(JSON.stringify({jsonParseCopy}))
     // how do we take a copy instead?
 
     // We will hopefully soon see the object ...spread
 
     // Things to note - this is only 1 level deep - both for Arrays and Objects. lodash has a cloneDeep method, but you should think twice before using it.
 
-  </script>
+</script>
 
 </body>
 </html>
