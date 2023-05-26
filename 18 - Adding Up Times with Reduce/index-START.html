@@ -183,6 +183,45 @@
     </li>
   </ul>
 <script>
+  const liElems = Array.from(document.querySelectorAll('li[data-time]'))
+
+  console.time('date time')
+  const summ = (_, s1, s2) => +s1 * 60 + +s2;
+
+  const secSum = liElems
+          .reduce((secSum, li) =>
+                  secSum + +li.dataset.time.replace(/(\d+):(\d+)/, summ), 0)
+
+  const _timeOverall = new Date(secSum * 1000).toISOString().match(/(\d+):(\d+):(\d+)/)[0]
+
+  console.timeEnd('date time')
+  console.log({_timeOverall});
+
+  console.time('reduce time')
+  const timeOverall = liElems
+          .map(li => li.dataset.time)
+          .reduce((acc, currTime) => {
+            const [min, sec] = currTime.split(':')
+            acc[2] += +sec
+            acc[1] += +min
+
+            if (acc[2] > 59) {
+              acc[2] = acc[2] % 60
+              ++acc[1]
+            }
+
+            if (acc[1] > 59) {
+              acc[1] = acc[1] % 60
+              ++acc[0]
+            }
+
+            return acc
+          }, [0, 0, 0])
+          .join(':')
+  console.timeEnd('reduce time')
+
+  console.log({timeOverall})
+
 </script>
 </body>
 </html>

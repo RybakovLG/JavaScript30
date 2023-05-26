@@ -1,21 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Video Speed Scrubber</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://fav.farm/🔥" />
+    <meta charset="UTF-8">
+    <title>Video Speed Scrubber</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://fav.farm/🔥"/>
 </head>
 <body>
 
-  <div class="wrapper">
-    <video class="flex" width="765" height="430" src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4" loop controls></video>
+<div class="wrapper">
+    <video class="flex" width="765" height="430" src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4" loop
+           controls></video>
     <div class="speed">
-      <div class="speed-bar">1×</div>
+        <div class="speed-bar">1×</div>
     </div>
-  </div>
+</div>
 
 <script>
+    const [[player], [speedContainer], [speedBar]] =
+        ['flex', 'speed', 'speed-bar']
+            .map(className => document.getElementsByClassName(className))
+
+    const speedContRect = speedContainer.getBoundingClientRect()
+    const speedBarRect = speedBar.getBoundingClientRect()
+
+    function setRate(ev) {
+        const playbackRate = (speedBar.getBoundingClientRect().height / speedBarRect.height).toFixed(1)
+
+        player.playbackRate = playbackRate
+
+        speedBar.style.height = ev.offsetY / speedContRect.height * 100 + '%'
+        speedBar.textContent = String(playbackRate + 'x')
+    }
+
+    speedContainer.onmousedown = ev => {
+        setRate(ev)
+        speedContainer.onmousemove = setRate
+    }
+
+    speedContainer.onmouseleave = () => {
+        speedContainer.onmousemove = null
+    }
+
 </script>
 </body>
 </html>

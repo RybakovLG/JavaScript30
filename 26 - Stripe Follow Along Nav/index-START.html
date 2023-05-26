@@ -143,11 +143,11 @@
     display: none;
   }
 
-  .trigger-enter .dropdown {
+  .trigger-enter ~ .dropdown {
     display: block;
   }
 
-  .trigger-enter-active .dropdown {
+  .trigger-enter-active ~ .dropdown {
     opacity: 1;
   }
 
@@ -221,6 +221,37 @@
 </style>
 
 <script>
+  const menu = document.getElementsByClassName('dropdownBackground')[0]
+  const activeLinks = document.querySelectorAll('a[href="#"]')
+
+  activeLinks.forEach(link => {
+
+      link.onmouseenter = () => {
+          link.classList.add('trigger-enter')
+          menu.classList.add('open')
+          const {x, width, height} = link.nextElementSibling.getBoundingClientRect()
+          const {y} = link.getBoundingClientRect()
+
+          menu.ontransitionend = ev => {
+              ev.propertyName === 'transform' &&
+              link.classList.add('trigger-enter-active')
+          }
+
+          menu.setAttribute('style',
+              `width:  ${width}px;
+                 height: ${height}px;
+                 transform: translate(${x}px, ${y}px);
+                `
+          )
+      }
+
+      link.parentElement.onmouseleave = ev => {
+          ev.target.firstElementChild.classList.remove('trigger-enter', 'trigger-enter-active')
+          menu.classList.remove('open')
+      }
+
+  })
+
 </script>
 
 </body>

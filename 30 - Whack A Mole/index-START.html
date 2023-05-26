@@ -1,42 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Whack A Mole!</title>
-  <link href='https://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://fav.farm/🔥" />
+    <meta charset="UTF-8">
+    <title>Whack A Mole!</title>
+    <link href='https://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://fav.farm/🔥"/>
 </head>
 <body>
 
-  <h1>Whack-a-mole! <span class="score">0</span></h1>
-  <button onClick="startGame()">Start!</button>
+<h1>Whack-a-mole! <span class="score">0</span> <span class="score js-timer">10</span></h1>
+<!--  <h1>timer <span class="score">0</span></h1>-->
+<button onClick="startGame()">Start!</button>
 
-  <div class="game">
+<div class="game">
     <div class="hole hole1">
-      <div class="mole"></div>
+        <div class="mole"></div>
     </div>
     <div class="hole hole2">
-      <div class="mole"></div>
+        <div class="mole"></div>
     </div>
     <div class="hole hole3">
-      <div class="mole"></div>
+        <div class="mole"></div>
     </div>
     <div class="hole hole4">
-      <div class="mole"></div>
+        <div class="mole"></div>
     </div>
     <div class="hole hole5">
-      <div class="mole"></div>
+        <div class="mole"></div>
     </div>
     <div class="hole hole6">
-      <div class="mole"></div>
+        <div class="mole"></div>
     </div>
-  </div>
+</div>
 
 <script>
-  const holes = document.querySelectorAll('.hole');
-  const scoreBoard = document.querySelector('.score');
-  const moles = document.querySelectorAll('.mole');
+    const holes = document.querySelectorAll('.hole');
+    const scoreBoard = document.querySelector('.score');
+    const timerBoard = document.querySelector('.score.js-timer');
+
+    let gameTimer = 10
+    timerBoard.textContent = gameTimer.toString()
+
+    function randomTime(min, max) {
+        return Math.round(Math.random() * (max - min) + min);
+    }
+
+    function startTimer() {
+        let timerId
+        let nowSec = new Date().getSeconds()
+
+        timerBoard.textContent = String(gameTimer)
+        --gameTimer
+
+        timerID = setInterval(() => {
+            if (gameTimer < 0) {
+                clearInterval(timerId)
+                return
+            }
+            if (nowSec === new Date().getSeconds())
+                return
+
+            timerBoard.textContent = String(gameTimer)
+            nowSec = new Date().getSeconds()
+            --gameTimer
+        }, 500)
+    }
+
+    function* randomHoleGen() {
+        let currHoleInd = randomTime(0, 5)
+
+        while (gameTimer !== 0) {
+            let newTime = randomTime(0, 5)
+
+            while (newTime === currHoleInd) {
+                newTime = randomTime(0, 5)
+            }
+
+            currHoleInd = newTime
+            yield holes[newTime]
+        }
+    }
+
+    let score = 0
+
+    function* upMoleGen() {
+        let timerId
+
+        while (gameTimer > 0) {
+            yield () => {
+                let hole = holesGenerator.next().value
+
+                hole.classList.add('up')
+
+                hole.firstElementChild.onmousedown = () => {
+                    hole.classList.remove('up')
+                    clearTimeout(timerId)
+                    molesGen.next().value?.()
+                    hole.firstElementChild.onmousedown = null
+                    scoreBoard.textContent = String(++score)
+                    timerBoard.textContent = String(++gameTimer)
+                    gameTimer++
+                }
+
+                timerId = setTimeout(() => {
+                    hole.firstElementChild.onmousedown = null
+                    molesGen.next().value?.()
+                    hole.classList.remove('up')
+                }, randomTime(Math.min(2000 / gameTimer - score * 25, 50), Math.max(4000 / gameTimer - score * 25, 500)))
+            }
+        }
+    }
+
+    const holesGenerator = randomHoleGen()
+    const molesGen = upMoleGen()
+
+    function startGame() {
+        molesGen.next().value()
+        startTimer()
+    }
 
 </script>
 </body>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <title>Speech Detection</title>
@@ -13,9 +13,24 @@
 <script>
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+  const words = document.querySelector('.words');
+  words.appendChild(document.createElement('p'))
+
+  const recognition = new SpeechRecognition();
+  recognition.interimResults = true;
+
+  recognition.addEventListener('result', ev => {
+    words.lastChild.textContent = [...ev.results].map(res => res[0].transcript).join('')
+  })
+
+  recognition.addEventListener('end', () => {
+    recognition.start()
+    words.appendChild(document.createElement('p'));
+  });
+
+  recognition.start()
 
 </script>
-
 
   <style>
     html {

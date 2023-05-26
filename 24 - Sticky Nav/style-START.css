@@ -25,6 +25,7 @@ body {
   transition: transform 0.5s;
 }
 
+
 header {
   text-align: center;
   height: 50vh;
@@ -42,11 +43,13 @@ h1 {
 }
 
 nav {
+  position: sticky;
+  top: -1px;
   background: black;
-  top: 0;
+  /*top: 0;*/
   width: 100%;
   transition: all 0.5s;
-  position: relative;
+  /*position: relative;*/
   z-index: 1;
 }
 
@@ -63,15 +66,25 @@ nav li {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: flex-basis 1s ease;
 }
 
 li.logo {
-  max-width: 0;
+  flex-grow: 0;
+  flex-basis: 0;
   overflow: hidden;
   background: white;
   transition: all .5s;
   font-weight: 600;
   font-size: 30px;
+}
+
+nav.is-pinned li.logo {
+  flex-grow: 1;
+}
+
+nav.is-pinned ~ .site-wrap {
+  transform: none;
 }
 
 li.logo a {

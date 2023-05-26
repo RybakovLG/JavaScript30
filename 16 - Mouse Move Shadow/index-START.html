@@ -1,41 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Mouse Shadow</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
+    <meta charset="UTF-8">
+    <title>Mouse Shadow</title>
+    <link rel="icon" href="https://fav.farm/🔥"/>
 </head>
 <body>
 
-  <div class="hero">
+<div class="hero">
     <h1 contenteditable>🔥WOAH!</h1>
-  </div>
+</div>
 
-  <style>
-  html {
-    color: black;
-    font-family: sans-serif;
-  }
+<style>
+    html {
+        color: black;
+        font-family: sans-serif;
+    }
 
-  body {
-    margin: 0;
-  }
+    body {
+        margin: 0;
+    }
 
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: black;
-  }
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: black;
+    }
 
-  h1 {
-    text-shadow: 10px 10px 0 rgba(0,0,0,1);
-    font-size: 100px;
-  }
-  </style>
+    h1 {
+        text-shadow: 10px 10px 0 rgba(0, 0, 0, 1);
+        font-size: 100px;
+    }
+</style>
 
 <script>
+
+    const text = document.getElementsByTagName('h1')[0],
+        [pink, blue, green, darkBlue] = ['rgba(255, 0, 255, 0.7)', 'rgba(0, 255, 255, 0.7)', 'rgba(0, 255, 0, 0.7)', 'rgba(0, 0, 255, 0.7)'],
+        {width, height, top: textTop, left} = text.getBoundingClientRect();
+    centerTextCoords = {x: left + width / 2, y: textTop + height / 2}
+
+    function moveShadows(ev) {
+        requestAnimationFrame(() => {
+                const horizontal = (ev.clientX - centerTextCoords.x) / 5
+                const vertical = (ev.clientY - centerTextCoords.y) / 5
+
+                text.style.textShadow = `${pink} ${horizontal}px ${vertical}px 0px, ${blue} ${-horizontal}px ${-vertical}px 0px, ${green} ${-vertical}px ${horizontal}px  0px, ${darkBlue}  ${vertical}px ${-horizontal}px 0px`
+            }
+        )
+    }
+
+    document.addEventListener('mousemove', moveShadows)
+
 </script>
 </body>
 </html>

@@ -36,6 +36,23 @@
   </div>
 
 <script>
+
+  const slider = document.getElementsByClassName('items')[0]
+
+  slider.onmousedown = () => {
+    slider.onmousemove = ev => {
+      slider.scrollLeft -= ev.movementX * 3
+    }
+    slider.classList.add('active')
+  }
+
+  ['onmouseleave', 'onmouseup'].forEach(ev => {
+    slider[ev] = () => {
+      slider.onmousemove = null
+      slider.classList.remove('active')
+    }
+  })
+
 </script>
 
   </body>
